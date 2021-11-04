@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using LanguageExt;
+using System;
+using static LanguageExt.Prelude;
 
 namespace Exemple.Domain.Models
 {
@@ -37,20 +34,16 @@ namespace Exemple.Domain.Models
             return $"{Value:0.##}";
         }
 
-        public static bool TryParseGrade(string gradeString, out Grade grade)
+        public static Option<Grade> TryParseGrade(string gradeString)
         {
-            bool isValid = false;
-            grade = null;
-            if(decimal.TryParse(gradeString, out decimal numericGrade))
+            if(decimal.TryParse(gradeString, out decimal numericGrade) && IsValid(numericGrade))
             {
-                if (IsValid(numericGrade))
-                {
-                    isValid = true;
-                    grade = new(numericGrade);
-                }
+                return Some<Grade>(new(numericGrade));
             }
-
-            return isValid;
+            else
+            {
+                return None;
+            }
         }
 
         private static bool IsValid(decimal numericGrade) => numericGrade > 0 && numericGrade <= 10;
